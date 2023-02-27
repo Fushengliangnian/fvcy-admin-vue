@@ -29,11 +29,27 @@ export default {
   methods: {
     getBreadcrumb() {
       // only show routes with meta.title
-      let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
+      let matched = this.$route.matched
+      const last = matched[matched.length - 1]
+
+      if (!last.meta || !last.meta.title) {
+        console.log('getBreadcrumb this.$route.path')
+
+        const view = this.$store.state.permission.pathRouteMap[this.$route.path]
+        if (view) {
+          matched = matched.concat([{ path: view.path, meta: { title: view.meta.title }}])
+        }
+      }
+
+      matched = matched.filter(item => {
+        if (item.meta && item.meta.title) {
+          return true
+        }
+      })
       const first = matched[0]
 
       if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+        matched = [{ path: '/dashboard', meta: { title: '首页' }}].concat(matched)
       }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)

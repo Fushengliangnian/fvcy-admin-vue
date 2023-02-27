@@ -1,6 +1,6 @@
 <template>
   <div v-if="!item.hidden">
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+    <template v-if="hasOneShowingChild(children, item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
@@ -13,7 +13,7 @@
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
       <sidebar-item
-        v-for="child in item.children"
+        v-for="child in children"
         :key="child.path"
         :is-nest="true"
         :item="child"
@@ -36,7 +36,6 @@ export default {
   components: { Item, AppLink },
   mixins: [FixiOSBug],
   props: {
-    // route object
     item: {
       type: Object,
       required: true
@@ -54,7 +53,12 @@ export default {
     // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
     // TODO: refactor with render function
     this.onlyOneChild = null
-    return {}
+    return {
+      children: []
+    }
+  },
+  async created() {
+    await this.getChildren()
   },
   methods: {
     hasOneShowingChild(children = [], parent) {
@@ -89,6 +93,15 @@ export default {
         return this.basePath
       }
       return path.resolve(this.basePath, routePath)
+    },
+
+    // 好多地方都需要用哪. 所以这里后面应该移动到 permission 中去。
+    async getChildren() {
+      if (this.item.pullChildren) {
+        this.children = await this.$store.dispatch(this.item.pullChildrenFunction, this.item.children)
+      } else {
+        this.children = this.item.children
+      }
     }
   }
 }

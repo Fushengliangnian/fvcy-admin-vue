@@ -27,6 +27,7 @@ export default {
   },
   methods: {
     linkProps(to) {
+      console.log('to linkProps')
       if (this.isExternal) {
         return {
           href: to,

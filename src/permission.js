@@ -33,6 +33,9 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           await store.dispatch('user/getInfo')
+          await store.dispatch('permission/generateRoutes', null)
+          await store.dispatch('spider/getSpiderProjects', [])
+          // store.commit('permission/generateRoutes', null)
 
           next()
         } catch (error) {

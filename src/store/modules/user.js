@@ -32,12 +32,16 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
+      login(
+        { username: username.trim(), password: password }
+      ).then(
+        response => {
+          const { data } = response
+          commit('SET_TOKEN', data.access_token)
+          setToken(data.access_token)
+          resolve()
+        }
+      ).catch(error => {
         reject(error)
       })
     })
@@ -52,9 +56,8 @@ const actions = {
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-
-        const { name, avatar } = data
-
+        const name = data.nickname || data.username
+        const avatar = 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         resolve(data)

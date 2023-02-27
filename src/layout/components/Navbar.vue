@@ -13,7 +13,7 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              {{ home.title }}
             </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
@@ -40,6 +40,14 @@ export default {
   components: {
     Breadcrumb,
     Hamburger
+  },
+  data() {
+    return {
+      home: {
+        // todo: 应该改成从 router 里拿，放到 computed 函数中
+        title: '首页', icon: 'dashboard'
+      }
+    }
   },
   computed: {
     ...mapGetters([

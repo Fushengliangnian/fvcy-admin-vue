@@ -13,3 +13,11 @@ export function setToken(token) {
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
+
+// export function getHeadersToken(token) {
+//   return Cookies.set(TokenKey, token)
+// }
+//
+// export function setHeadersToken(token) {
+//   return Cookies.set(TokenKey, token)
+// }
